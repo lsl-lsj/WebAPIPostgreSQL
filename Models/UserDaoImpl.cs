@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Data;
+using Dapper;
+using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using System.Linq;
 
 namespace WebAPI04PostgreSQL.Models
 {
     public class UserDaoImpl : IUserDao
     {
-
         /// <summary>
         /// 添加用户
         /// </summary>
@@ -18,14 +20,15 @@ namespace WebAPI04PostgreSQL.Models
         {
             string sql = $"INSERT INTO userinfo (username,password,age,gender)values (@a,@b,@c,@d)";
 
-            using (var cmd = NpgSQLUtiL.GetConnection(sql, Configuration))
+            using (var conn = NpgSQLUtiL.GetConnection(Configuration))
             {
-                cmd.Parameters.AddWithValue("a", user.Username);
-                cmd.Parameters.AddWithValue("b", user.Password);
-                cmd.Parameters.AddWithValue("c", user.Age);
-                cmd.Parameters.AddWithValue("d", user.Gender);
-
-                return cmd.ExecuteNonQuery();
+                return conn.Execute(sql, new
+                {
+                    a = user.Username,
+                    b = user.Password,
+                    c = user.Age,
+                    d = user.Gender
+                });
             }
         }
 
@@ -39,11 +42,9 @@ namespace WebAPI04PostgreSQL.Models
         {
             string sql = "delete from userinfo where username = @a";
 
-            using (var cmd = NpgSQLUtiL.GetConnection(sql, Configuration))
+            using (var conn = NpgSQLUtiL.GetConnection(Configuration))
             {
-                cmd.Parameters.AddWithValue("a", username);
-
-                return cmd.ExecuteNonQuery();
+                return conn.Execute(sql, new { a = username });
             }
         }
 
@@ -58,14 +59,16 @@ namespace WebAPI04PostgreSQL.Models
         {
             string sql = "update userinfo set username = @a,password = @b,age = @c,gender=@d where username = @e";
 
-            using (var cmd = NpgSQLUtiL.GetConnection(sql, Configuration))
+            using (var conn = NpgSQLUtiL.GetConnection(Configuration))
             {
-                cmd.Parameters.AddWithValue("a", user.Username);
-                cmd.Parameters.AddWithValue("b", user.Password);
-                cmd.Parameters.AddWithValue("c", user.Age);
-                cmd.Parameters.AddWithValue("d", user.Gender);
-                cmd.Parameters.AddWithValue("e", user.Username);
-                return cmd.ExecuteNonQuery();
+                return conn.Execute(sql, new
+                {
+                    a = user.Username,
+                    b = user.Password,
+                    c = user.Age,
+                    d = user.Gender,
+                    e = user.Username
+                });
             }
         }
 
@@ -77,25 +80,12 @@ namespace WebAPI04PostgreSQL.Models
         /// <returns></returns>
         public List<User> Find(string username, IConfiguration Configuration)
         {
-            List<User> list = new List<User>();
-
+            List<User> list = null;
             string sql = "select * from userinfo where username = @a";
 
-            using (var cmd = NpgSQLUtiL.GetConnection(sql, Configuration))
+            using (var conn = NpgSQLUtiL.GetConnection(Configuration))
             {
-                cmd.Parameters.AddWithValue("a", username);
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        User user = new User();
-                        user.Username = reader.GetString(0);
-                        user.Password = reader.GetString(1);
-                        user.Age = reader.GetInt32(2);
-                        user.Gender = reader.GetString(3);
-                        list.Add(user);
-                    }
-                }
+                list = (List<User>)conn.Query<User>(sql, new { a = username });
             }
             return list;
         }
@@ -107,24 +97,13 @@ namespace WebAPI04PostgreSQL.Models
         /// <returns></returns>
         public List<User> Find(IConfiguration Configuration)
         {
-            List<User> list = new List<User>();
+            List<User> list = null;
 
             string sql = "select * from userinfo";
 
-            using (var cmd = NpgSQLUtiL.GetConnection(sql, Configuration))
+            using (var conn = NpgSQLUtiL.GetConnection(Configuration))
             {
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        User user = new User();
-                        user.Username = reader.GetString(0);
-                        user.Password = reader.GetString(1);
-                        user.Age = reader.GetInt32(2);
-                        user.Gender = reader.GetString(3);
-                        list.Add(user);
-                    }
-                }
+                list = (List<User>)conn.Query<User>(sql);
             }
             return list;
         }
