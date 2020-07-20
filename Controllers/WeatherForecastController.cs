@@ -19,12 +19,14 @@ namespace WebAPI04PostgreSQL.Controllers
         {
             _configuration = Configuration;
         }
-        UserDaoImpl impl = new UserDaoImpl();
+
+        private UserDaoImpl impl = new UserDaoImpl();
 
         [HttpPost]
         public string Post(User user)
         {
-            int r = impl.Add(user, _configuration);
+            int r = 0;
+            r = impl.Add(user, _configuration);
             if (r == 0)
             {
                 return "未添加成功";
@@ -38,8 +40,8 @@ namespace WebAPI04PostgreSQL.Controllers
         [HttpDelete]
         public string Delete(string Username)
         {
-            int r = impl.Delete(Username, _configuration);
-
+            int r = 0;
+            r = impl.Delete(Username, _configuration);
             if (r == 0)
             {
                 return "删除失败";
@@ -53,8 +55,8 @@ namespace WebAPI04PostgreSQL.Controllers
         [HttpPut]
         public string Put(User user)
         {
-            int r = impl.Put(user, _configuration);
-
+            int r = 0;
+            r = impl.Put(user, _configuration);
             if (r == 0)
             {
                 return "修改失败";
@@ -66,7 +68,7 @@ namespace WebAPI04PostgreSQL.Controllers
         }
 
         [HttpGet]
-        public List<User> FindOne(string Username)
+        public List<User> Find(string Username)
         {
             if (Username == null)
             {
