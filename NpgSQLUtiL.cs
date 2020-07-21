@@ -6,17 +6,20 @@ namespace WebAPI04PostgreSQL
 {
     public class NpgSQLUtiL
     {
-        public static NpgsqlConnection GetConnection(IConfiguration Configuration)
+        public readonly string _connectionString;
+        public NpgSQLUtiL(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetSection("ConnectionStrings")["conn"];
+        }
+        public NpgsqlConnection GetConnection()
         {
             // 从配置中读取连接字符串
-            string connString = null;
             NpgsqlConnection conn = null;
 
-            connString = Configuration.GetConnectionString("conn");
 
             try
             {
-                conn = new NpgsqlConnection(connString);
+                conn = new NpgsqlConnection(_connectionString);
             }
             catch
             {

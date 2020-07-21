@@ -11,32 +11,28 @@ namespace WebAPI04PostgreSQL.Models
         /// 查询单个用户
         /// </summary>
         /// <param name="username"></param>
-        /// <param name="Configuration"></param>
         /// <returns></returns>
-        List<User> Find(string username, IConfiguration Configuration);
+        List<User> Find(string username);
         
-        /// <summary>
-        /// 查询所有用户
-        /// </summary>
-        /// <param name="Configuration"></param>
-        /// <returns></returns>
-        List<User> Find(IConfiguration Configuration);
+       /// <summary>
+       /// 查询所有用户
+       /// </summary>
+       /// <returns></returns>
+        List<User> Find();
 
         /// <summary>
         /// 添加用户
         /// </summary>
         /// <param name="user"></param>
-        /// <param name="Configuration"></param>
         /// <returns></returns>
-        int Add(User user, IConfiguration Configuration);
+        int Add(User user);
 
         /// <summary>
         /// 删除用户
         /// </summary>
         /// <param name="username"></param>
-        /// <param name="Configuration"></param>
         /// <returns></returns>
-        int Delete(string username, IConfiguration Configuration);
+        int Delete(string username);
 
         /// <summary>
         /// 修改用户
@@ -44,6 +40,6 @@ namespace WebAPI04PostgreSQL.Models
         /// <param name="user"></param>
         /// <param name="Configuration"></param>
         /// <returns></returns>
-        int Put(User user, IConfiguration Configuration);
+        int Put(User user);
     }
 }

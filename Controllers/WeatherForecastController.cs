@@ -13,20 +13,18 @@ namespace WebAPI04PostgreSQL.Controllers
     [Route("")]
     public class WeatherForecastController : ControllerBase
     {
-        private IConfiguration _configuration;
 
-        public WeatherForecastController(IConfiguration Configuration)
+        private readonly IUserDao _userDao;
+        public WeatherForecastController(IUserDao userDao)
         {
-            _configuration = Configuration;
+            _userDao = userDao;
         }
-
-        private UserDaoImpl impl = new UserDaoImpl();
 
         [HttpPost]
         public string Post(User user)
         {
             int r = 0;
-            r = impl.Add(user, _configuration);
+            r = _userDao.Add(user);
             if (r == 0)
             {
                 return "未添加成功";
@@ -41,7 +39,7 @@ namespace WebAPI04PostgreSQL.Controllers
         public string Delete(string Username)
         {
             int r = 0;
-            r = impl.Delete(Username, _configuration);
+            r = _userDao.Delete(Username);
             if (r == 0)
             {
                 return "删除失败";
@@ -56,7 +54,7 @@ namespace WebAPI04PostgreSQL.Controllers
         public string Put(User user)
         {
             int r = 0;
-            r = impl.Put(user, _configuration);
+            r = _userDao.Put(user);
             if (r == 0)
             {
                 return "修改失败";
@@ -72,11 +70,11 @@ namespace WebAPI04PostgreSQL.Controllers
         {
             if (Username == null)
             {
-                return impl.Find(_configuration);
+                return _userDao.Find();
             }
             else
             {
-                return impl.Find(Username, _configuration);
+                return _userDao.Find(Username);
             }
         }
     }

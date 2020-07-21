@@ -1,26 +1,30 @@
-using System;
 using System.Collections.Generic;
-using System.Data;
 using Dapper;
-using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using System.Linq;
 
 namespace WebAPI04PostgreSQL.Models
 {
+
     public class UserDaoImpl : IUserDao
     {
+        private readonly NpgSQLUtiL _npgSQLUtiL;
+
+        public UserDaoImpl(NpgSQLUtiL npgSQLUtiL)
+        {
+            _npgSQLUtiL = npgSQLUtiL;
+        }
+
         /// <summary>
         /// 添加用户
         /// </summary>
         /// <param name="user"></param>
         /// <param name="configuration"></param>
         /// <returns></returns>
-        public int Add(User user, IConfiguration Configuration)
+        public int Add(User user)
         {
             string sql = $"INSERT INTO userinfo (username,password,age,gender)values (@a,@b,@c,@d)";
 
-            using (var conn = NpgSQLUtiL.GetConnection(Configuration))
+            using (var conn = _npgSQLUtiL.GetConnection())
             {
                 return conn.Execute(sql, new
                 {
@@ -38,11 +42,11 @@ namespace WebAPI04PostgreSQL.Models
         /// <param name="username"></param>
         /// <param name="Configuration"></param>
         /// <returns></returns>
-        public int Delete(string username, IConfiguration Configuration)
+        public int Delete(string username)
         {
             string sql = "delete from userinfo where username = @a";
 
-            using (var conn = NpgSQLUtiL.GetConnection(Configuration))
+            using (var conn = _npgSQLUtiL.GetConnection())
             {
                 return conn.Execute(sql, new { a = username });
             }
@@ -55,11 +59,11 @@ namespace WebAPI04PostgreSQL.Models
         /// <param name="user"></param>
         /// <param name="Configuration"></param>
         /// <returns></returns>
-        public int Put(User user, IConfiguration Configuration)
+        public int Put(User user)
         {
             string sql = "update userinfo set username = @a,password = @b,age = @c,gender=@d where username = @e";
 
-            using (var conn = NpgSQLUtiL.GetConnection(Configuration))
+            using (var conn = _npgSQLUtiL.GetConnection())
             {
                 return conn.Execute(sql, new
                 {
@@ -78,12 +82,12 @@ namespace WebAPI04PostgreSQL.Models
         /// <param name="username"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        public List<User> Find(string username, IConfiguration Configuration)
+        public List<User> Find(string username)
         {
             List<User> list = null;
             string sql = "select * from userinfo where username = @a";
 
-            using (var conn = NpgSQLUtiL.GetConnection(Configuration))
+            using (var conn = _npgSQLUtiL.GetConnection())
             {
                 list = (List<User>)conn.Query<User>(sql, new { a = username });
             }
@@ -95,13 +99,13 @@ namespace WebAPI04PostgreSQL.Models
         /// </summary>
         /// <param name="Configuration"></param>
         /// <returns></returns>
-        public List<User> Find(IConfiguration Configuration)
+        public List<User> Find()
         {
             List<User> list = null;
 
             string sql = "select * from userinfo";
 
-            using (var conn = NpgSQLUtiL.GetConnection(Configuration))
+            using (var conn = _npgSQLUtiL.GetConnection())
             {
                 list = (List<User>)conn.Query<User>(sql);
             }
