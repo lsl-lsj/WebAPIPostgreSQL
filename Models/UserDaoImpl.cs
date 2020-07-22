@@ -18,7 +18,6 @@ namespace WebAPI04PostgreSQL.Models
         /// 添加用户
         /// </summary>
         /// <param name="user"></param>
-        /// <param name="configuration"></param>
         /// <returns></returns>
         public int Add(User user)
         {
@@ -36,12 +35,11 @@ namespace WebAPI04PostgreSQL.Models
             }
         }
 
-        /// <summary>
-        /// 删除用户
-        /// </summary>
-        /// <param name="username"></param>
-        /// <param name="Configuration"></param>
-        /// <returns></returns>
+       /// <summary>
+       /// 删除用户
+       /// </summary>
+       /// <param name="username"></param>
+       /// <returns></returns>
         public int Delete(string username)
         {
             string sql = "delete from userinfo where username = @a";
@@ -52,12 +50,10 @@ namespace WebAPI04PostgreSQL.Models
             }
         }
 
-
         /// <summary>
         /// 修改用户
         /// </summary>
         /// <param name="user"></param>
-        /// <param name="Configuration"></param>
         /// <returns></returns>
         public int Put(User user)
         {
@@ -80,7 +76,6 @@ namespace WebAPI04PostgreSQL.Models
         /// 查询单个用户
         /// </summary>
         /// <param name="username"></param>
-        /// <param name="password"></param>
         /// <returns></returns>
         public List<User> Find(string username)
         {
@@ -97,7 +92,6 @@ namespace WebAPI04PostgreSQL.Models
         /// <summary>
         /// 查询所有用户
         /// </summary>
-        /// <param name="Configuration"></param>
         /// <returns></returns>
         public List<User> Find()
         {
